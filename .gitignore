@@ -31,6 +31,7 @@ terraform.rc
 *.retry
 .ansible/
 vault.yml
+.vault_pass
 
 ###############
 # IDE

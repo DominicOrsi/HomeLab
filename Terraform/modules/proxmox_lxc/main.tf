@@ -5,6 +5,13 @@ resource "proxmox_virtual_environment_container" "lxc_container" {
 
   description = var.description
 
+  unprivileged = var.unprivileged
+
+  # Prevents the destruction on the node. Used for Traefik LXC
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
+
   cpu {
     architecture = var.architecture
     cores = var.cpu_cores

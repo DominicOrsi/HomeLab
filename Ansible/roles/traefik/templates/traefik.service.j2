@@ -1,0 +1,13 @@
+[Unit]
+Description=Traefik Edge Router
+After=network-online.target
+
+[Service]
+Type=notify
+Environment=CLOUDFLARE_DNS_API_TOKEN={{ cf_dns_api_token | trim }}
+ExecStart=/usr/bin/traefik --configFile=/etc/traefik/traefik.yaml
+Restart=on-failure
+ExecReload=/bin/kill -USR1 $MAINPID
+
+[Install]
+WantedBy=multi-user.target

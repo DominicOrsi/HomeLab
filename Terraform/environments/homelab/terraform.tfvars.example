@@ -1,0 +1,4 @@
+proxmox_endpoint  = "https://<REPLACE_ME>/api2/json"
+proxmox_user     = "<REPLACE_ME>"
+proxmox_password = "<REPLACE_ME>"
+ssh_public_key   = "<REPLACE_ME"

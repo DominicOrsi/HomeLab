@@ -1,0 +1,6 @@
+- name: Ensure SSH public key is in authorized_keys
+  ansible.builtin.authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    key: "{{ lookup('file', 'authorized_keys') }}"
+  

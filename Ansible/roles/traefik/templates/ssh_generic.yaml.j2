@@ -1,0 +1,32 @@
+{% set ns = namespace(found=false) %}
+{% for host in groups['all'] %}
+  {% if hostvars[host]['ssh_proxy_port'] is defined and host not in groups['proxmox_hosts'] %}
+    {% set ns.found = true %}
+  {% endif %}
+{% endfor %}
+
+{% if ns.found %}
+tcp:
+  routers:
+{% for host in groups['all'] %}
+{% if hostvars[host]['ssh_proxy_port'] is defined and host not in groups['proxmox_hosts'] %}
+    ssh-{{ host }}-router:
+      entryPoints:
+        - "ssh-{{ host }}"
+      rule: "HostSNI(`*`)"
+      service: "ssh-{{ host }}-service"
+{% endif %}
+{% endfor %}
+
+  services:
+{% for host in groups['all'] %}
+{% if hostvars[host]['ssh_proxy_port'] is defined and host not in groups['proxmox_hosts'] %}
+    ssh-{{ host }}-service:
+      loadBalancer:
+        servers:
+          - address: "{{ hostvars[host]['ansible_host'] }}:22"
+{% endif %}
+{% endfor %}
+{% else %}
+# No generic SSH hosts defined in inventory
+{% endif %}

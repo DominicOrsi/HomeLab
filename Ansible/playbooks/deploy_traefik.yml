@@ -1,0 +1,12 @@
+---
+- name: Deploy Traefik Proxy to LXC
+  hosts: traefik_hosts  # This must match a group in your inventory file
+  become: true          # Runs tasks as root within the LXC
+  remote_user: root
+
+  # You can define your variables here, or better yet, in group_vars/
+  vars:
+    traefik_version: "3.6.8"
+
+  roles:
+    - traefik

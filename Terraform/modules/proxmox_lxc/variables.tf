@@ -94,3 +94,9 @@ variable "operating_system_name" {
   description = "Name of the OS"
   default     = "fedora"
 }
+
+# Container Rights
+variable "unprivileged" {
+  type = bool
+  default = true
+}

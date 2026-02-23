@@ -1,0 +1,47 @@
+http:
+  routers:
+{% for host in groups['proxmox_hosts'] %}
+    {{ host }}-web:
+      rule: "Host(`{{ host }}.dino.computer`)"
+      middlewares:
+        - internal-https-hosts@file
+      service: {{ host }}-web-service
+      tls:
+        certResolver: cloudflare
+{% endfor %}
+
+  services:
+{% for host in groups['proxmox_hosts'] %}
+    {{ host }}-web-service:
+      loadBalancer:
+        servers:
+          - url: "https://{{ hostvars[host]['ansible_host'] }}:443"
+        passHostHeader: true
+        serversTransport: proxmox-transport
+{% endfor %}
+
+  serversTransports:
+    proxmox-transport:
+      insecureSkipVerify: true
+
+tcp:
+  routers:
+{% for host in groups['proxmox_hosts'] %}
+{% if hostvars[host]['ssh_proxy_port'] is defined %}
+    ssh-{{ host }}-router:
+      entryPoints:
+        - "ssh-{{ host }}"
+      rule: "HostSNI(`*`)"
+      service: ssh-{{ host }}-service
+{% endif %}
+{% endfor %}
+
+  services:
+{% for host in groups['proxmox_hosts'] %}
+{% if hostvars[host]['ssh_proxy_port'] is defined %}
+    ssh-{{ host }}-service:
+      loadBalancer:
+        servers:
+          - address: "{{ hostvars[host]['ansible_host'] }}:22"
+{% endif %}
+{% endfor %}

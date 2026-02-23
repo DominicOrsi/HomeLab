@@ -1,0 +1,82 @@
+http:
+  routers:
+    # Traefik Dashboard - Protected by BasicAuth
+    dashboard:
+      rule: "Host(`proxy.dino.computer`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      service: api@internal
+      middlewares:
+        - auth
+      priority: 100
+      tls:
+        certResolver: cloudflare
+
+    # Catchall Router - Prevents warnings and handles SNI properly
+    catchall:
+      entryPoints:
+        - "http"
+        - "https"
+      # Using HostRegexp ensures Traefik knows this router is responsible for certificate selection
+      rule: "HostRegexp(`{host:.+}`)"
+      service: unavailable
+      priority: 1
+      tls:
+        certResolver: cloudflare
+
+  services:
+    unavailable:
+      loadBalancer:
+        servers: [] # Empty server list triggers 503
+
+  middlewares:
+    auth:
+      basicAuth:
+        users:
+          - "{{ traefik_dashboard_user_auth }}"
+
+    internal-hosts-endorsed:
+      ipAllowList:
+        sourceRange:
+          - "192.168.1.0/24"
+          - "192.168.10.0/24"
+
+    http-only:
+      redirectScheme:
+        scheme: http
+        permanent: true
+
+    https-only:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+    internal-http-hosts:
+      chain:
+        middlewares:
+          - internal-hosts-endorsed
+          - http-only
+
+    internal-https-hosts:
+      chain:
+        middlewares:
+          - internal-hosts-endorsed
+          - https-only
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS13
+      curvePreferences:
+        - X25519
+        - CurveP256
+        - CurveP384
+        - CurveP521
+      sniStrict: true
+
+  stores:
+    default:
+      defaultGeneratedCert:
+        resolver: cloudflare
+        domain:
+          main: "dino.computer"
+          sans:
+            - "*.dino.computer"

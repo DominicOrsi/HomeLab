@@ -1,0 +1,5 @@
+# Proxmox API Access
+proxmox_api_user: ansible@pve
+proxmox_api_token_id: {{ vault_proxmox_api_token_id }}
+proxmox_api_token_secret: {{ proxmox_api_token_secret }}
+proxmox_validate_certs: false
