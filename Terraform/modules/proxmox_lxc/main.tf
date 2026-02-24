@@ -1,7 +1,7 @@
 
 resource "proxmox_virtual_environment_container" "lxc_container" {
   node_name = var.node_name # from external main
-  vm_id     = var.ct_id # from external main
+  vm_id     = var.ct_id     # from external main
 
   description = var.description
 
@@ -14,12 +14,12 @@ resource "proxmox_virtual_environment_container" "lxc_container" {
 
   cpu {
     architecture = var.architecture
-    cores = var.cpu_cores
+    cores        = var.cpu_cores
   }
 
   disk {
     datastore_id = var.storage_id
-    size = var.disk_size
+    size         = var.disk_size
   }
 
   initialization {
@@ -32,8 +32,8 @@ resource "proxmox_virtual_environment_container" "lxc_container" {
     }
 
     user_account {
-      keys = [var.ssh_public_key] # from external main
-      password = var.user_password # from external main
+      keys     = [var.ssh_public_key] # from external main
+      password = var.user_password    # from external main
     }
   }
 
@@ -50,5 +50,4 @@ resource "proxmox_virtual_environment_container" "lxc_container" {
     template_file_id = var.template_id
     type             = var.operating_system_name
   }
-
 }

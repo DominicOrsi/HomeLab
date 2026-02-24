@@ -1,43 +1,43 @@
 variable "node_name" {
-  type = string
+  type        = string
   description = "Proxmox Host"
 }
 
 variable "ct_id" {
-  type = number
+  type        = number
   description = "Container ID"
 }
 
 variable "description" {
-  type = string
+  type        = string
   description = "Description of LXC"
-  default = "Terraform Created LXC"
+  default     = "Terraform Created LXC"
 }
 
 # CPU Info
 variable "architecture" {
-  type = string
+  type        = string
   description = "CPU Architecture"
-  default = "amd64"
+  default     = "amd64"
 }
 
 variable "cpu_cores" {
-  type = number
+  type        = number
   description = "Number of CPU Cores"
-  default = 1
+  default     = 1
 }
 
 # Disk
 variable "storage_id" {
-  type    = string
+  type        = string
   description = "Identifier for the data store to creak the disk in"
-  default = "local-lvm"
+  default     = "local-lvm"
 }
 
 variable "disk_size" {
-  type    = number
+  type        = number
   description = "Size of the root filesystem in GB"
-  default = 4
+  default     = 4
 }
 
 # Initialization
@@ -47,7 +47,7 @@ variable "hostname" {
 }
 
 variable "ip_config_ipv4_address" {
-  type = string
+  type    = string
   default = "dhcp"
 }
 
@@ -57,29 +57,29 @@ variable "ssh_public_key" {
 }
 
 variable "user_password" {
-  type = string
+  type        = string
   description = "Password for root account"
-  sensitive = true
+  sensitive   = true
 }
 
 # Memory
 variable "dedicated" {
-  type = number
+  type        = number
   description = "Dedicated memory in MB"
-  default = 512
+  default     = 512
 }
 
 # Network
 variable "bridge" {
-  type = string
+  type        = string
   description = "Network bridge"
-  default = "vmbr0"
+  default     = "vmbr0"
 }
 
 variable "network_interface_name" {
-  type = string
+  type        = string
   description = "Network interface name"
-  default = "eth0"
+  default     = "eth0"
 }
 
 # Operating System
@@ -97,6 +97,6 @@ variable "operating_system_name" {
 
 # Container Rights
 variable "unprivileged" {
-  type = bool
+  type    = bool
   default = true
 }
