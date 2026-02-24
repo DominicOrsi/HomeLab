@@ -1,0 +1,7 @@
+---
+- name: Deploy Homer Dashboard to LXC
+  hosts: homer
+  become: true
+
+  roles:
+    - homer

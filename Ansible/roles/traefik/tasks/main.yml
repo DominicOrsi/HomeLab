@@ -46,7 +46,7 @@
 - name: Deploy Static Configuration (traefik.yaml)
   ansible.builtin.template:
     src: traefik.yaml.j2
-    dest: /etc/traefik/traefik.yaml # Changed from .yml to .yaml for consistency
+    dest: /etc/traefik/traefik.yaml
     mode: "0644"
   notify: Restart Traefik
 

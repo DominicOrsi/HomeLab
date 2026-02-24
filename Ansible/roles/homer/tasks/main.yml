@@ -1,0 +1,51 @@
+---
+- name: Install dependencies
+  ansible.builtin.dnf:
+    name: [nginx, python3, wget, unzip]
+    state: present
+
+- name: Create Web Root
+  ansible.builtin.file:
+    path: /var/www
+    state: directory
+    mode: "0755"
+
+- name: Clean and Create Homer Directory
+  ansible.builtin.file:
+    path: "/var/www/homer"
+    state: directory
+    mode: "0755"
+    owner: nginx
+    group: nginx
+
+- name: Download and Unarchive Homer
+  ansible.builtin.unarchive:
+    src: https://github.com/bastienwirtz/homer/releases/latest/download/homer.zip
+    dest: /var/www/homer
+    remote_src: true
+    owner: nginx
+    group: nginx
+
+- name: Deploy assets/config.yml
+  ansible.builtin.copy:
+    src: "config.yml"
+    dest: "/var/www/homer/assets/config.yml"
+    owner: nginx
+    group: nginx
+    mode: "0644"
+  notify: Restart nginx
+
+- name: Deploy Homer Nginx configuration
+  ansible.builtin.copy:
+    src: "homer.conf"
+    dest: "/etc/nginx/conf.d/homer.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart nginx
+
+- name: Start Nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: started
+    enabled: true
